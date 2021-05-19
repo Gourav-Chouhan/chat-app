@@ -1,0 +1,42 @@
+const express = require('express')
+const app = express()
+const http = require('http')
+const server = http.createServer(app)
+const { Server } = require('socket.io')
+const io = new Server(server)
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + "/public/index.html")
+});
+
+// io.on('connection', (socket) => {
+//     console.log("A new user connected")
+
+//     socket.on('chat message', (msg) => {
+//         console.log(`message: ${msg}`)
+//     })
+
+//     socket.on('disconnect', () => {
+//         console.log("user got disconnected")
+//     })
+
+// })
+
+let firstTime = true
+
+io.on('connection', (socket) => {
+
+    // if (firstTime) {
+    //     socket.on('chat message', (msg) => {
+    //         io.emit('chat message', msg + " just joined the chat!")
+    //     })
+    //     firstTime = false
+    // }
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg);
+    });
+});
+
+server.listen(80, () => {
+    console.log("listning to port 80")
+})
